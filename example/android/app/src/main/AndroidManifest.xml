@@ -27,6 +27,8 @@
               android:name="io.flutter.embedding.android.SplashScreenDrawable"
               android:resource="@drawable/launch_background"
               />
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -34,6 +36,15 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+
+       <receiver android:name="com.eloware.dataLogicPlugin.DataLogicListener">
+           <intent-filter>
+               <action android:name="com.datalogic.decodewedge.decode_action" />
+               <category android:name="com.datalogic.decodewedge.decode_category" />
+           </intent-filter>
+       </receiver>
+
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
