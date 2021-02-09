@@ -1,43 +1,22 @@
 package com.eloware.scanner_filled_text_field
 
-import androidx.annotation.NonNull
-import android.content.BroadcastReceiver;
-
-import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import io.flutter.plugin.common.EventChannel
 
 /** ScannerFilledTextFieldPlugin */
-class ScannerFilledTextFieldPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
-
-  override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "scanner_filled_text_field")
-    channel.setMethodCallHandler(this)
-  }
-
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+class BarcodeReader : BroadcastReceiver() {
+    companion object {
+        lateinit var eventChannel: EventChannel.EventSink
     }
-  }
 
-  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
-}
+    override fun onReceive(context: Context, intent: Intent) {
+        if (!intent.hasCategory("com.datalogic.decodewedge.decode_category"))
+            return;
 
-class BarcodeReceiver: BroadcastReceiver {
-
-  EventChannel
+        val payload = intent.getStringExtra("com.datalogic.decode.intentwedge.barcode_string")
+        eventChannel.success(payload)
+    }
 
 }
